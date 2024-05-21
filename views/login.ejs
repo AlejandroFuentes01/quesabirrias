@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/login.css">
+    <title>Login</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+</head>
+<body>
+    <header>
+        <h1>Tienda de Maria 🥦</h1>
+    </header>
+    <main>
+        <div class="contenedor">
+            <div class="login">
+                <h1>Inicio de sesión</h1>
+                <% if (typeof error !== 'undefined') { %>
+                    <script>
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: '<%= error %>'
+                        });
+                    </script>
+                <% } %>
+                <% if (typeof success !== 'undefined') { %>
+                    <script>
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Éxito',
+                            text: '<%= success %>'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '<%= redirectUrl %>';
+                            }
+                        });
+                    </script>
+                <% } %>
+                <form action="/login" method="post">
+                    <input type="text" name="username" placeholder="Nombre de usuario" required>
+                    <input type="password" name="password" placeholder="Contraseña" required>
+                    <input type="submit" value="Inicio de sesión">
+                    <a href="/register" class="register-button">Registrarse</a>
+                </form>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>&copy; Tienda de Maria <span id="current-year"></span></p>
+        </div>
+    </footer>
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
