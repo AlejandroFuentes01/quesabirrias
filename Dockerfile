@@ -10,6 +10,9 @@ COPY package*.json ./
 # Instalar las dependencias de la aplicación
 RUN npm install
 
+# Rebuild bcrypt
+RUN npm rebuild bcrypt --build-from-source
+
 # Copiar el resto del código de la aplicación
 COPY . .
 
