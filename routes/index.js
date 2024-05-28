@@ -1,15 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const { isAuthenticated, isAdmin } = require('../middleware/middleware');
+const { isAuthenticated, isAdmin, isUser, restrictToAdmin, restrictToUser } = require('../middleware/middleware');
 const User = require('../models/userModel');
+const Product = require('../models/productModel');
 
 // User view
-router.get('/user', isAuthenticated, (req, res) => {
-    res.render('user', { user: req.session.user });
+router.get('/user', isAuthenticated, restrictToAdmin, isUser, (req, res) => {
+    Product.getAllProducts((products) => {
+        res.render('user', { user: req.session.user, products });
+    });
 });
 
 // Admin view
-router.get('/admin', isAuthenticated, isAdmin, (req, res) => {
+router.get('/admin', isAuthenticated, restrictToUser, isAdmin, (req, res) => {
     User.getAllUsers((users) => {
         res.render('admin', { user: req.session.user, users });
     });

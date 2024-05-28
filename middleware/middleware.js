@@ -19,5 +19,19 @@ module.exports = {
         } else {
             res.redirect('/login');
         }
+    },
+    restrictToAdmin: (req, res, next) => {
+        if (req.session.user && req.session.user.role === 'admin') {
+            res.redirect('/admin');
+        } else {
+            next();
+        }
+    },
+    restrictToUser: (req, res, next) => {
+        if (req.session.user && req.session.user.role === 'user') {
+            res.redirect('/user');
+        } else {
+            next();
+        }
     }
 };
