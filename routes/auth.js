@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const User = require('../models/userModel');
 const Product = require('../models/productModel');
 const { validatePassword } = require('../middleware/validator');
+const { isAuthenticated, isUser, isAdmin, restrictToAdmin } = require('../middleware/middleware');
 
 // Render login page
 router.get('/login', (req, res) => {
@@ -84,14 +85,14 @@ router.get('/logout', (req, res) => {
 });
 
 // Get all users (for admin)
-router.get('/users', (req, res) => {
+router.get('/users', isAuthenticated, isAdmin, restrictToAdmin, (req, res) => {
     User.getAllUsers((users) => {
         res.render('admin', { user: req.session.user, users });
-    });
+    }, true); // Exclude admin users
 });
 
 // Delete a user (for admin)
-router.post('/delete-user', (req, res) => {
+router.post('/delete-user', isAuthenticated, isAdmin, restrictToAdmin, (req, res) => {
     const { userId } = req.body;
     User.deleteUser(userId, () => {
         res.redirect('/users');
@@ -99,14 +100,14 @@ router.post('/delete-user', (req, res) => {
 });
 
 // Get all products (for users)
-router.get('/products', (req, res) => {
+router.get('/products', isAuthenticated, isUser, (req, res) => {
     Product.getAllProducts((products) => {
         res.render('user', { user: req.session.user, products });
     });
 });
 
 // Add a product (for users)
-router.post('/add-product', (req, res) => {
+router.post('/add-product', isAuthenticated, isUser, (req, res) => {
     const { name, quantity, price } = req.body;
     const added_by = req.session.user.username;
 

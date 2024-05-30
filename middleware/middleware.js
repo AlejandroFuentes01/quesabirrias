@@ -1,3 +1,4 @@
+// middleware.js
 module.exports = {
     isAuthenticated: (req, res, next) => {
         if (req.session.user) {
@@ -9,6 +10,8 @@ module.exports = {
     isAdmin: (req, res, next) => {
         if (req.session.user && req.session.user.role === 'admin') {
             next();
+        } else if (req.session.user && req.session.user.role === 'user') {
+            res.redirect('/user');
         } else {
             res.redirect('/login');
         }
@@ -16,15 +19,19 @@ module.exports = {
     isUser: (req, res, next) => {
         if (req.session.user && req.session.user.role === 'user') {
             next();
+        } else if (req.session.user && req.session.user.role === 'admin') {
+            res.redirect('/admin');
         } else {
             res.redirect('/login');
         }
     },
     restrictToAdmin: (req, res, next) => {
         if (req.session.user && req.session.user.role === 'admin') {
-            res.redirect('/admin');
-        } else {
             next();
+        } else if (req.session.user && req.session.user.role === 'user') {
+            res.redirect('/user');
+        } else {
+            res.redirect('/login');
         }
     },
     restrictToUser: (req, res, next) => {

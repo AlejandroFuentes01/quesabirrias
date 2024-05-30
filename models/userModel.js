@@ -19,8 +19,12 @@ const User = {
             callback(result.insertId);
         });
     },
-    getAllUsers: (callback) => {
-        db.query('SELECT * FROM users', (err, result) => {
+    getAllUsers: (callback, excludeAdmin = false) => {
+        let query = 'SELECT * FROM users';
+        if (excludeAdmin) {
+            query += ' WHERE role != "admin"';
+        }
+        db.query(query, (err, result) => {
             if (err) throw err;
             callback(result);
         });
